@@ -1,12 +1,22 @@
-import { LaunchData } from './types';
+import { LaunchData, SearchFilter, SortObject } from './types';
 
-export async function fetchPastLaunches(limit: number): Promise<LaunchData[]> {
+export async function fetchPastLaunches(limit: number, sortRequest: SortObject | undefined, searchFilter: SearchFilter | undefined): Promise<LaunchData[]> {
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
+    let sortRequestString = '';
+
+    sortRequest && searchFilter ?
+        sortRequestString = `, find: { mission_name: "${searchFilter}" }, sort: "${sortRequest.property}", order: "${sortRequest.order}"`
+    : sortRequest ?
+        sortRequestString = `, sort: "${sortRequest.property}", order: "${sortRequest.order}"`
+    : searchFilter ?
+        sortRequestString = `, find: { mission_name: "${searchFilter}" }`
+    :
+    sortRequestString = '';
 
     const body = JSON.stringify({
         query: `{
-            launchesPast(limit: ${limit}) {
+            launchesPast(limit: ${limit}${sortRequestString}) {
                 rocket {
                     rocket_name
                     second_stage {

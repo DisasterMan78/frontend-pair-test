@@ -19,3 +19,17 @@ export interface LaunchData {
         mission_patch_small: string | null;
     }
 }
+
+export type SortOption = 'asc' | 'desc';
+
+export type SortProperty = 'mission_name' | 'launch_date_utc';
+
+export type SortObject = {
+    order: SortOption,
+    property: SortProperty,
+    name: string,
+};
+
+export type SearchFilter = string;
+
+export type SortOptions = { [key: string]: SortObject };
